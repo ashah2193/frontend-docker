@@ -3,6 +3,18 @@ services:
   - docker
 language: generic
 before_install:
-  - docker build -t frontend-docker-img -f Dockerfile.dev . 
+  - docker build -t frontend-docker-img -f Dockerfile.dev .
 script:
   - docker run -e CI=true frontend-docker-img npm run test -- --coverage
+deploy:
+  provider: elasticbeanstalk
+  region: "us-east-2"
+  app: "frontend-docker"
+  env: "FrontendDocker-env"
+  bucket_name: "elasticbeanstalk-us-east-2-852550184847"
+  bucket_path: "frontend-docker"
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key:
+    secure: "$AWS_SECRET_KEY"
